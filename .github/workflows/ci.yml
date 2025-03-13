@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [18]
 
     steps:
       - uses: actions/checkout@v4
@@ -23,6 +23,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+            path: ~/.npm
+            key: node-cache-${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+              node-cache-${{ runner.os }}-npm-
       - run: make install
       - run: make lint
       - run: make test
